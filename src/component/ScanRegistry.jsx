@@ -162,23 +162,22 @@ export default function ScanRegistry() {
       }
     };
   
-    const fetchAndMergeDrivers = async (productId) => {
+    const fetchAndMergeDrivers = async () => {
       try {
         const { outdatedDrivers, updatedDrivers, productID } =
           await fetchDataAndStoreOutdatedDrivers();
-    
+  
         // Merge drivers
-        const res = await axios.get(`https://server-3-y44z.onrender.com/outdatedDrivers?productId=${productId}`);
+        const res = await axios.get("https://server-3-y44z.onrender.com/outdatedDrivers");
         const driversData = res.data;
         const mergedDrivers = [...updatedDrivers, ...driversData];
         mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-    
+  
         setSystemInformation(mergedDrivers);
       } catch (error) {
         console.error("Error:", error);
       }
     };
-    
   
     fetchAndMergeDrivers(); 
   }, [selectedNumber]);
