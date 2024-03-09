@@ -68,15 +68,27 @@ const handleStartScan = () => {
     fetchSystemInfo();
   }, []);
 
-  useEffect(() => {
-    axios.get('https://server-3-y44z.onrender.com/api/outdatedDrivers/count')
-      .then(response => {
-        setCount(response.data.count || 0);
-      })
-      .catch(error => {
-        console.error('Error fetching outdated drivers count:', error);
-        setCount(0);
-      });
+  useEffect((productID) => {
+    const getd =async()=>{
+      try {
+        const responseProductID =  await invoke("__cmd__testing");
+        const productID = responseProductID.product_id;
+        console.log('Product ID:', productID);
+      
+        axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`)
+          .then(response => {
+            setCount(response.data.count || 0);
+          })
+          .catch(error => {
+            console.error('Error fetching outdated drivers count:', error);
+            setCount(0);
+          });
+      } catch (error) {
+        console.error('Error invoking command:', error);
+      }
+    }
+    getd()
+
   }, []);
   
   useEffect(() => {

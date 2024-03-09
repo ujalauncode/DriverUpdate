@@ -168,8 +168,9 @@ export default function ScanRegistry() {
           await fetchDataAndStoreOutdatedDrivers();
   
         // Merge drivers
-        const res = await axios.get("https://server-3-y44z.onrender.com/outdatedDrivers");
+        const res= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/system/${productID}`);
         const driversData = res.data;
+        console.log("outdated driverssss rrrr ====", driversData)
         const mergedDrivers = [...updatedDrivers, ...driversData];
         mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
   
@@ -241,15 +242,27 @@ export default function ScanRegistry() {
     }
   };
 
-  useEffect(() => {
-    axios.get('https://server-3-y44z.onrender.com/api/outdatedDrivers/count')
-      .then(response => {
-        setCount(response.data.count || 0);
-      })
-      .catch(error => {
-        console.error('Error fetching outdated drivers count:', error);
-        setCount(0);
-      });
+  useEffect((productID) => {
+    const getd =async()=>{
+      try {
+        const responseProductID =  await invoke("__cmd__testing");
+        const productID = responseProductID.product_id;
+        console.log('Product ID:', productID);
+      
+        axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`)
+          .then(response => {
+            setCount(response.data.count || 0);
+          })
+          .catch(error => {
+            console.error('Error fetching outdated drivers count:', error);
+            setCount(0);
+          });
+      } catch (error) {
+        console.error('Error invoking command:', error);
+      }
+    }
+    getd()
+
   }, []);
 
   return cleanerStart === "status" ? (
