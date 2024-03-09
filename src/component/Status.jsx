@@ -94,10 +94,10 @@ const handleStartScan = () => {
   useEffect(() => {
     async function fetchLatestBackupDate() {
       try {
-        const response = await axios.get('https://server-3-y44z.onrender.com/backupdate');
-        const data = response.data;
-        // http://16.171.160.250:3000/backupdate
-  
+        const responseProductID =  await invoke("__cmd__testing");
+        const productID = responseProductID.product_id;
+        const response = await axios.get(`https://server-3-y44z.onrender.com/backupdate/${productID}`);
+        const data = response.data;  
         if (data.sortedData && data.sortedData.length > 0) {
           const latestDate = data.sortedData[0].backupDate;
           setLatestBackupDate(latestDate);

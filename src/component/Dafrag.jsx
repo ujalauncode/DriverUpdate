@@ -63,12 +63,15 @@ function Dafrag({ currentDate, setCurrentDate }) {
     try {
       const response = await invoke('mine_driver');
       const newDriverData = JSON.parse(response);
+      const responseProductID = await invoke("__cmd__testing");
+      const productID = responseProductID.product_id;
   
       setDriverData(newDriverData);
       setDriversCount(newDriverData.length);
       console.log(newDriverData);
       setCurrentIndexs(0);
       console.log("get driver route");
+  
       const intervalId = setInterval(() => {
         console.log("setInterval");
         if (isScanning) {
@@ -92,9 +95,10 @@ function Dafrag({ currentDate, setCurrentDate }) {
       console.log("date is ==", formattedDate);
   
       await axios.post('https://server-3-y44z.onrender.com/backupalldata', {
-        driversCount: newDriverData.driversCount,
-        driverData: newDriverData, // Assuming newDriverData contains the driver information
-        backupDate: formattedDate 
+        driversCount: newDriverData.length,
+        driverData: newDriverData,
+        backupDate: formattedDate,
+        productID: productID // Include productID in the POST request
       });
   
       setScanInterval(intervalId);
@@ -106,6 +110,7 @@ function Dafrag({ currentDate, setCurrentDate }) {
       console.error("Error:", error);
     }
   };
+  
 
   useEffect(() => {
     if (percentage === 100) {

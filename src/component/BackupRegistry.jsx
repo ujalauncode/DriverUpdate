@@ -7,6 +7,8 @@ import Clock from "../Image/icons8-clock-50.png";
 import Calendar from "../Image/icons8-calendar-50.png";
 import Computer from "../Image/icons8-desktop-50.png";
 import Logo from "../Image/money-back-in-60-days-guarantee-badge-golden-medal-vector-20372626-removebg-preview.png";
+import { invoke } from "@tauri-apps/api/tauri";
+
 export default function BackupRegistry() {
   const [backupType, setBackupType] = useState(null);
   const [backupDate, setBackupDate] = useState([]);
@@ -29,12 +31,13 @@ export default function BackupRegistry() {
   useEffect(() => {
     async function fetchBackupDates() {
       try {
-        const response = await axios.get(
-          "https://server-3-y44z.onrender.com/backupdate"
-        );
+        const responseProductID =  await invoke("__cmd__testing");
+        const productID = responseProductID.product_id;
+        const response = await axios.get(`https://server-3-y44z.onrender.com/backupdate/${productID}`);
+
         setLatestBackupDates(response.data.sortedData);
       } catch (error) {
-        setError("Error fetching backup dates: " + error.message);
+        console.log("Error fetching backup dates: " + error.message);
       }
     }
     fetchBackupDates();
@@ -63,7 +66,10 @@ export default function BackupRegistry() {
   useEffect(() => {
     const getdrivers = async () => {
       try {
-        const response = await axios.get("https://server-3-y44z.onrender.com/outdatedDrivers");
+        const responseProductID =  await invoke("__cmd__testing");
+        const productID = responseProductID.product_id;
+        console.log('Product ID:', productID);
+        const response= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
         const driverinfo = await response.data;
         console.log("my driver =", driverinfo);
         setmydriver(driverinfo);

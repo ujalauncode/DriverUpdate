@@ -152,9 +152,7 @@ export default function ScanRegistry() {
           }
         });
   
-        // Store outdated drivers in MongoDB
         postOutdatedDrivers(outdatedDrivers, productID);
-  
         setOutdatedDriverCount(outdatedDrivers.length);
         return { outdatedDrivers, updatedDrivers, productID };
       } catch (error) {
@@ -168,7 +166,7 @@ export default function ScanRegistry() {
           await fetchDataAndStoreOutdatedDrivers();
   
         // Merge drivers
-        const res= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/system/${productID}`);
+        const res= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
         const driversData = res.data;
         console.log("outdated driverssss rrrr ====", driversData)
         const mergedDrivers = [...updatedDrivers, ...driversData];
@@ -182,16 +180,13 @@ export default function ScanRegistry() {
   
     fetchAndMergeDrivers(); 
   }, [selectedNumber]);
-  
 
   useEffect(() => {
     localStorage.setItem("selectedNumber", selectedNumber);
   }, [selectedNumber]);
 
-
   const handleSelect = (e) => {
     const { name, checked } = e.target;
-
     let tempDrivers;
 
     if (name === "allselect") {
@@ -226,10 +221,11 @@ export default function ScanRegistry() {
   };
 
   
-  const handleUpdateDriverStatus = async (_id) => {
+  const handleUpdateDriverStatus = async (_id, ) => {
     try {
       const response = await axios.put(
-        `https://server-3-y44z.onrender.com/api/outdatedDrivers/${_id}`
+        `https://server-3-y44z.onrender.com/api/outdatedDrivers/${_id}`,
+        
       );
       if (response.status === 200) {
         console.log("Driver status updated successfully");
@@ -241,6 +237,7 @@ export default function ScanRegistry() {
       console.error("Error updating driver status:", error);
     }
   };
+  
 
   useEffect((productID) => {
     const getd =async()=>{
