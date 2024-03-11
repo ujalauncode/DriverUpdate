@@ -3,30 +3,17 @@ import StartScan from "./StartScan";
 import desktop from "../Image/desktop.png";
 import WindowIcon from "@mui/icons-material/Window";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import intel from "../Image/intel.png";
-import minewin from "../Image/minewin.png";
-// import grapgics from "../Image/gragics.jpg"
 import { invoke } from "@tauri-apps/api/tauri";
-
-import giphy from "../Image/giphy.gif";
 import graph from "../Image/graph.png"
-import CheckIcon from "@mui/icons-material/Check";
-import ErrorIcon from "@mui/icons-material/Error";
+
 
 function Status() {
   const [cleanerStart, setCleanerStart] = useState("status");
   const [systemInfo, setSystemInfo] = useState();
   const [error, setError] = useState(null);
-  const [driverData, setDriverData] = useState([]);
-  const [driverCount, setDriverCount] = useState(0);
-  const [comparisonResult, setComparisonResult] = useState([]);
-  const [lastScanDateTime, setLastScanDateTime] = useState(null);
-  const [outdatedDriverCount, setOutdatedDriverCount] = useState(0);
-  const [systemInformation, setSystemInformation] = useState();
   const [count, setCount] = useState();
   const [latestBackupDate, setLatestBackupDate] = useState('');
-  const [d,setd]=useState([])
   const buttonRef = useRef(null);
 
   useEffect(() => {
@@ -37,11 +24,7 @@ function Status() {
     };
     startScanAutomatically();
   }, []);
-
-const handleStartScan = () => {
-    setCleanerStart("scan-registry");
-  };
-
+  
   useEffect(() => {
     const fetchSystemInfo = async () => {
       try {

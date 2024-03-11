@@ -2,10 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import earth from "../Image/img.png";
 import cut from "../Image/cut.png";
 import search from "../Image/search.png";
-import computer from "../Image/computer.png";
-import people from "../Image/pepole.png";
-import caiset from "../Image/caiset.png";
-import setting from "../Image/setting.png";
 import StartScan from "./StartScan";
 import File from "../Image/file.png"
 import MoreVertIcon from '@mui/icons-material/MoreVert';

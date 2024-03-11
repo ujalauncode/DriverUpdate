@@ -27,6 +27,7 @@
         "height": 600,
         "minimizable": true,
         "alwaysOnTop": false
+     
       }
     ],
     "security": {

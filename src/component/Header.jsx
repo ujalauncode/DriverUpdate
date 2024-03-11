@@ -52,7 +52,7 @@ function Header() {
         className={`main-container ${isRegisterPopupOpen ? "header-blur" : ""}`}
       >
         <div className="col-12 col-lg-12 col-sm-12 col-md-12 mx-2 box-containers ">
-          <div
+          <button
             className="box col-1 col-lg-2 col-sm-1 col-md-2 "
             onClick={(e) => {
               handleButtonClick("status");
@@ -62,7 +62,7 @@ function Header() {
               <img src={HomeIcon2} alt=""  className="box-icon ml-9"/>
               <h3 className="h3-box h3font">Status</h3>
             </div>
-          </div>
+          </button>
 
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
@@ -75,6 +75,7 @@ function Header() {
               <h3 className="h3-box h3font">Driver Scan</h3>
             </div>
           </div>
+
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
             onClick={(e) => {
@@ -88,6 +89,7 @@ function Header() {
               <h3 className="h3-box h3font">Backup</h3>
             </div>
           </div>
+
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
             onClick={(e) => {
@@ -99,6 +101,7 @@ function Header() {
               <h3 className="h3-box h3font">Restore</h3>
             </div>
           </div>
+
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
             onClick={(e) => {

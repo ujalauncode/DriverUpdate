@@ -5,6 +5,7 @@ import settinglogo1 from "../Image/settinglogo1.png"
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import CloseIcon from '@mui/icons-material/Close';
 import { invoke } from '@tauri-apps/api/tauri';
+import '../component/StartScan.css'
 
 
 export default function Navbar() {
@@ -16,6 +17,8 @@ export default function Navbar() {
   const minimizeApp = async () => {
     invoke('window', 'minimize');
   };
+
+  
   return (
     <>
  <div className="container-fluid">
@@ -28,6 +31,8 @@ export default function Navbar() {
 
     </div>
     <div className='mr-5'>
+    
+  
       <GridViewIcon fontSize="medium" className="nav-icon" />
       <BusinessCenterIcon fontSize="medium" className="nav-icon" />
       {/* <MinimizeIcon  fontSize="large" className="nav-icon1" onClick={minimizeApp}/> */}

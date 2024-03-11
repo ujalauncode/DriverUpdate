@@ -1,5 +1,3 @@
-import searchImage from "../Image/search.png";
-import searchImage2 from "../Image/search img.png";
 import Setting from "./Setting";
 import { useEffect, useState } from "react";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";

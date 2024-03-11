@@ -5,6 +5,8 @@ import ScanRegistry from "./ScanRegistry";
 import { invoke } from '@tauri-apps/api/tauri';
 import "../component/StartScan.css"
 
+import face from "../Image/face.gif"
+
 export default function StartScan({ value = 0 }) {
   const [driverData, setDriverData] = useState([]);
   const [currentIndexs, setCurrentIndexs] = useState(0);
@@ -13,13 +15,29 @@ export default function StartScan({ value = 0 }) {
   const [cleanerStatus, setCleanerStatus] = useState("status");
   const [isScanning, setIsScanning] = useState(true);
   const [scanInterval, setScanInterval] = useState(null);
-  const [initialInterval, setInitialScanInterval] = useState(null);
   const [redirectPath, setRedirectPath] = useState(null);
-  const [driverInfo, setDriverInfo] = useState('');
-  const [alertShown, setAlertShown] = useState(false);
+  const [showPopover, setShowPopover] = useState(true);
+
+  const [backgroundColor, setBackgroundColor] = useState('rgb(0, 0, 0)'); // Initial background color
+
+  useEffect(() => {
+    // Function to generate a random RGB color
+    const getRandomColor = () => {
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      return `rgb(${r}, ${g}, ${b})`;
+    };
+
+    // Change background color after 1 second
+    const timeout = setTimeout(() => {
+      setBackgroundColor(getRandomColor()); // Set random color
+    }, 1000); // 1000 milliseconds = 1 second
+
+    return () => clearTimeout(timeout); // Cleanup on unmount
+  }, []);
 
   let intervalId;
-  // const invoke = window.__TAURI__.invoke
 
   useEffect(() => {
     if (redirectPath) {
@@ -40,20 +58,7 @@ export default function StartScan({ value = 0 }) {
 
   const handleRedirect = (status, delay) => {
       setTimeout(() => {
-          setCleanerStatus(status);
-          // invoke("tauri", "open", {
-          //     uri: "scan-registry",
-          //     webviewId: "webview",
-          // });
-          
-          // if (!alertShown) {
-          //     alertShown = true;
-          //     const confirmed = window.confirm("Redirecting to another page. Click OK to continue or Cancel to stay.");
-          //     if (!confirmed) {
-          //         // Handle cancellation, if needed
-          //     }
-          // }
-          
+          setCleanerStatus(status);         
       }, delay);
   };
   
@@ -64,7 +69,10 @@ export default function StartScan({ value = 0 }) {
     try {
       const response = await invoke('mine_driver');
       const newDriverData = JSON.parse(response);
-
+      setTimeout(() => {
+        setShowPopover(false);
+      }, 200);
+      
       setDriverData(newDriverData);
       console.log(newDriverData)
       setCurrentIndexs(0);
@@ -85,7 +93,6 @@ export default function StartScan({ value = 0 }) {
       setScanInterval(intervalId);
       console.log("first interval id =", intervalId);
   
-      // Clear interval when component unmounts
       return () => clearInterval(intervalId);
     } catch (error) {
       console.error("Error:", error);
@@ -148,7 +155,6 @@ export default function StartScan({ value = 0 }) {
                   <tr key={index}>
                     <th scope="row">{driver.DeviceName}</th>
                     <th scope="row">{driver.DriverVersion}</th>
-                    {/* <th scope="row">{driver.DriverStatus}</th> */}
                   </tr>
                 );
               })}
@@ -161,7 +167,24 @@ export default function StartScan({ value = 0 }) {
           {isScanning ? "Stop Scan" : "Start Scan"}
         </button>
       </div>
-      {handleRedirect("scan-registry", 19000)}
+      {handleRedirect("scan-registry", 18000)}
+
+      {showPopover && (
+      <div className="exclusion-maintesting22" style={{backgroundColor: backgroundColor,transition: 'background-color 1s ease',}}>
+      <div className="minenewpop ml-2 mt-4">
+        <div className="flex justify-content-between">       
+      <img src={face} alt="" />
+        <div className=" place-content-evenly mt-2 text-xs pt-4">
+          <h1 className="font-bold text-black text-xs">WAIT............</h1>
+          <br />
+          <span className=" text-black text-xs">
+            Scanning drivers from your system its taking bit time..
+          </span>
+        </div>
+        </div>
+      </div>
+    </div>
+      )}
     </>
   ) : (
     <ScanRegistry />

@@ -12,16 +12,19 @@ export default function RegisterPopupComponent({ onClose }) {
 
   const handlelincenskey = async () => {
     try {
-      const response = await fetch("https://poo-vqx1.onrender.com/getlicenseKey", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: userDetail.email,
-          licenseKey: userDetail.licenseKey,
-        }),
-      });
+      const response = await fetch(
+        "https://poo-vqx1.onrender.com/getlicenseKey",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: userDetail.email,
+            licenseKey: userDetail.licenseKey,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -46,12 +49,8 @@ export default function RegisterPopupComponent({ onClose }) {
             <div className="registernowfistpara">
               <p>Thank you for Trying Advance Driver Update!</p>
             </div>
-            <div
-             
-              className="marqueeinpopup"
-            >
+            <div className="marqueeinpopup">
               Please Contact our Support 9898989898.
-              
             </div>
 
             <div className="registernowalreadyhavekey">
