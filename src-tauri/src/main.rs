@@ -12,11 +12,12 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 async fn close_splashscreen(window: Window) {
-    // Close splashscreen
-    window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").close().unwrap();
-    // Show main window
-    window.get_window("header").expect("no window labeled 'main' found").show().unwrap();
-  }
+  // Close splashscreen
+  window.get_window("splashscreen").expect("no window labeled 'splashscreen' found").close().unwrap();
+  // Show main window
+  window.get_window("main").expect("no window labeled 'main' found").show().unwrap();
+}
+
 
 use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt; // Add this line
@@ -165,15 +166,11 @@ fn main() {
         .invoke_handler(tauri::generate_handler![greet, mine_driver, __cmd__testing,close_splashscreen])
         .setup(|app| {
             let splashscreen_window = app.get_window("splashscreen").unwrap();
-            let main_window = app.get_window("header").unwrap();
-            // we perform the initialization code on a new task so the app doesn't freeze
+            let main_window = app.get_window("main").unwrap();
             tauri::async_runtime::spawn(async move {
-              // initialize your app here instead of sleeping :)
               println!("Initializing...");
               std::thread::sleep(std::time::Duration::from_secs(2));
               println!("Done initializing.");
-      
-              // After it's done, close the splashscreen and display the main window
               splashscreen_window.close().unwrap();
               main_window.show().unwrap();
             });

@@ -27,10 +27,7 @@
         "height": 600,
         "minimizable": true,
         "alwaysOnTop": false,
-        "visible": false,
-        "label": "header"
-
-     
+        "visible": false
       },
        {
            "width": 400,
