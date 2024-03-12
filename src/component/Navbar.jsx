@@ -14,11 +14,13 @@ export default function Navbar() {
     window.open('', '_self', '');
     window.close();
   };
-  const minimizeApp = async () => {
-    invoke('window', 'minimize');
-  };
+  // const minimizeApp = async () => {
+  //   invoke('window', 'minimize');
+  // };
 
-  
+  // const minimizeApp = () => {
+  //   window.api.minimize(); // Call your Tauri API method to minimize the window
+  // };
   return (
     <>
  <div className="container-fluid">
@@ -35,7 +37,7 @@ export default function Navbar() {
   
       <GridViewIcon fontSize="medium" className="nav-icon" />
       <BusinessCenterIcon fontSize="medium" className="nav-icon" />
-      {/* <MinimizeIcon  fontSize="large" className="nav-icon1" onClick={minimizeApp}/> */}
+      {/* <MinimizeIcon  fontSize="medium" className="nav-icon1" onClick={minimizeApp}/> */}
       <CloseIcon  fontSize="small" color="secondary"  className="nav-icon11" onClick = {closeWindow} />
     </div>   
   </div>

@@ -4,7 +4,6 @@ import giphy from "../Image/giphy.gif";
 import ScanRegistry from "./ScanRegistry";
 import { invoke } from '@tauri-apps/api/tauri';
 import "../component/StartScan.css"
-
 import face from "../Image/face.gif"
 
 export default function StartScan({ value = 0 }) {
@@ -17,19 +16,17 @@ export default function StartScan({ value = 0 }) {
   const [scanInterval, setScanInterval] = useState(null);
   const [redirectPath, setRedirectPath] = useState(null);
   const [showPopover, setShowPopover] = useState(true);
+  const [alertShown, setAlertShown] = useState(false);
 
   const [backgroundColor, setBackgroundColor] = useState('rgb(0, 0, 0)'); // Initial background color
 
   useEffect(() => {
-    // Function to generate a random RGB color
     const getRandomColor = () => {
       const r = Math.floor(Math.random() * 256);
       const g = Math.floor(Math.random() * 256);
       const b = Math.floor(Math.random() * 256);
       return `rgb(${r}, ${g}, ${b})`;
     };
-
-    // Change background color after 1 second
     const timeout = setTimeout(() => {
       setBackgroundColor(getRandomColor()); // Set random color
     }, 1000); // 1000 milliseconds = 1 second
@@ -58,7 +55,13 @@ export default function StartScan({ value = 0 }) {
 
   const handleRedirect = (status, delay) => {
       setTimeout(() => {
-          setCleanerStatus(status);         
+          setCleanerStatus(status);  
+        //   if (!alertShown) {
+        //     alertShown = true;
+        //     const confirmed = window.confirm("Redirecting to another page. Click OK to continue or Cancel to stay.");
+        //     if (!confirmed) {
+        //     }
+        // }       
       }, delay);
   };
   
@@ -86,7 +89,6 @@ export default function StartScan({ value = 0 }) {
             if (currentIndexs >= newDriverData.length) {
             clearInterval(intervalId);
             setPercentage(100);
-            handleRedirect("scan-registry", 1000);
           }
         }
       },100);
@@ -170,16 +172,16 @@ export default function StartScan({ value = 0 }) {
       {handleRedirect("scan-registry", 18000)}
 
       {showPopover && (
-      <div className="exclusion-maintesting22" style={{backgroundColor: backgroundColor,transition: 'background-color 1s ease',}}>
+      <div className="exclusion-maintesting222" style={{backgroundColor: backgroundColor,transition: 'background-color 1s ease',}}>
       <div className="minenewpop ml-2 mt-4">
-        <div className="flex justify-content-between">       
+        <div className="flex justify-content-evenly">       
       <img src={face} alt="" />
-        <div className=" place-content-evenly mt-2 text-xs pt-4">
-          <h1 className="font-bold text-black text-xs">WAIT............</h1>
+        <div className="  mt-2 text-xs pt-4">
+          <h1 className="font-extrabold text-black text-xs">WAIT............</h1>
           <br />
-          <span className=" text-black text-xs">
-            Scanning drivers from your system its taking bit time..
-          </span>
+          <h2 className=" text-black text-xs font-bold">
+            Scanning system  drivers 
+          </h2>
         </div>
         </div>
       </div>

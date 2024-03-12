@@ -24,7 +24,7 @@ function Status() {
     };
     startScanAutomatically();
   }, []);
-  
+
   useEffect(() => {
     const fetchSystemInfo = async () => {
       try {
@@ -222,6 +222,9 @@ function Status() {
          
         </div>
       </div>
+
+
+
     </>
   ) : (
     <StartScan />

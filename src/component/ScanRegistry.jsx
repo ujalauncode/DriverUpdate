@@ -13,6 +13,7 @@ import giphy from "../Image/giphy.gif";
 import { NavLink, useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
+import check from "../Image/check.png";
 
 export default function ScanRegistry() {
   const [cleanerStart, setCleanerStart] = useState("status");
@@ -37,8 +38,9 @@ export default function ScanRegistry() {
   const [updatesuccessful, setupdatesuccessful] = useState();
   const [deviceName, setDeviceName] = useState();
   const [count, setCount] = useState(null);
-  const [error, setError]=useState()
-
+  const [error, setError] = useState();
+  const [DriverVersion, setDriverVersion] = useState();
+  const [updateId, setUpdateId] = useState();
 
   useEffect(() => {
     if (isScanning) {
@@ -58,12 +60,14 @@ export default function ScanRegistry() {
     }
   }, [isScanning]);
 
-  const handleupdateofdriver = (_id, DeviceName) => {
+  const handleupdateofdriver = (_id, DeviceName, DriverVersion) => {
     if (!hide) {
       setHide(true);
       setDeviceName(DeviceName);
+      setDriverVersion(DriverVersion);
       setDriversUpdated(true);
-      handleUpdateDriverStatus(_id);
+      // handleUpdateDriverStatus(_id);
+      setUpdateId(_id);
     }
   };
 
@@ -109,27 +113,27 @@ export default function ScanRegistry() {
         "https://server-3-y44z.onrender.com/api/outdatedDrivers",
         { outdatedDrivers, productID }
       );
-      alert("outdated drivers stored")
+      alert("outdated drivers stored");
       console.log("Outdated drivers stored in MongoDB:", res.data);
     } catch (error) {
       console.error("Error posting outdated drivers:", error);
-      alert("Error posting outdated drivers",error)
+      alert("Error posting outdated drivers", error);
     }
   };
-  
+
   useEffect(() => {
     const fetchDataAndStoreOutdatedDrivers = async () => {
       try {
         // Fetch product ID and driver information
         const responseProductID = await invoke("__cmd__testing");
         const productID = responseProductID.product_id;
-  
+
         const responseDriver = await invoke("mine_driver");
         const driverinfo = JSON.parse(responseDriver);
-  
+
         let outdatedDrivers = [];
         let updatedDrivers = [];
-  
+
         driverinfo.forEach((driver, index) => {
           if (index + 1 <= selectedNumber) {
             outdatedDrivers.push({
@@ -149,7 +153,7 @@ export default function ScanRegistry() {
             });
           }
         });
-  
+
         postOutdatedDrivers(outdatedDrivers, productID);
         setOutdatedDriverCount(outdatedDrivers.length);
         return { outdatedDrivers, updatedDrivers, productID };
@@ -157,26 +161,30 @@ export default function ScanRegistry() {
         console.error("Error fetching and storing driver information:", error);
       }
     };
-  
+
     const fetchAndMergeDrivers = async () => {
       try {
         const { outdatedDrivers, updatedDrivers, productID } =
           await fetchDataAndStoreOutdatedDrivers();
-  
+
         // Merge drivers
-        const res= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
+        const res = await axios.get(
+          `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
+        );
         const driversData = res.data;
-        console.log("outdated driverssss rrrr ====", driversData)
+        console.log("outdated driverssss rrrr ====", driversData);
         const mergedDrivers = [...updatedDrivers, ...driversData];
-        mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-  
+        mergedDrivers.sort((a, b) =>
+          a.DriverStatus.localeCompare(b.DriverStatus)
+        );
+
         setSystemInformation(mergedDrivers);
       } catch (error) {
         console.error("Error:", error);
       }
     };
-  
-    fetchAndMergeDrivers(); 
+
+    fetchAndMergeDrivers();
   }, [selectedNumber]);
 
   useEffect(() => {
@@ -205,7 +213,9 @@ export default function ScanRegistry() {
   };
 
   const updatedrive = () => {
+    console.log("updateId =", updateId);
     if (!showdriver) {
+      handleUpdateDriverStatus(updateId);
       setShowdriver(true);
       setIsScanning(true);
       setTimeout(() => {
@@ -218,12 +228,10 @@ export default function ScanRegistry() {
     }
   };
 
-  
-  const handleUpdateDriverStatus = async (_id, ) => {
+  const handleUpdateDriverStatus = async (_id) => {
     try {
       const response = await axios.put(
-        `https://server-3-y44z.onrender.com/api/outdatedDrivers/${_id}`,
-        
+        `https://server-3-y44z.onrender.com/api/outdatedDrivers/${_id}`
       );
       if (response.status === 200) {
         console.log("Driver status updated successfully");
@@ -235,30 +243,32 @@ export default function ScanRegistry() {
       console.error("Error updating driver status:", error);
     }
   };
-  
 
   useEffect((productID) => {
-    const getd =async()=>{
+    const getd = async () => {
       try {
-        const responseProductID =  await invoke("__cmd__testing");
+        const responseProductID = await invoke("__cmd__testing");
         const productID = responseProductID.product_id;
-        console.log('Product ID:', productID);
-      
-        axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`)
-          .then(response => {
+        console.log("Product ID:", productID);
+
+        axios
+          .get(
+            `https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`
+          )
+          .then((response) => {
             setCount(response.data.count || 0);
           })
-          .catch(error => {
-            console.error('Error fetching outdated drivers count:', error);
+          .catch((error) => {
+            console.error("Error fetching outdated drivers count:", error);
             setCount(0);
           });
       } catch (error) {
-        console.error('Error invoking command:', error);
+        console.error("Error invoking command:", error);
       }
-    }
-    getd()
-
+    };
+    getd();
   }, []);
+  const d = new Date();
 
   return cleanerStart === "status" ? (
     <>
@@ -314,10 +324,10 @@ export default function ScanRegistry() {
                   </tr>
                 </thead>
                 <tbody>
-                  {systemInformation && systemInformation.map((driver, i) => {
+                  {systemInformation &&
+                    systemInformation.map((driver, i) => {
                       return (
                         <tr key={i.id}>
-
                           <th scope="row">
                             <div className="form-check">
                               <input
@@ -352,7 +362,12 @@ export default function ScanRegistry() {
                                 fontWeight: driver.StatusTextWeight,
                               }}
                             >
-                              {driver.DriverStatus} {driver.DriverStatus === 'Outdated' ? <ErrorIcon style={{ fontSize: "small" }} /> : <CheckIcon style={{ fontSize: "small" }} />}
+                              {driver.DriverStatus}{" "}
+                              {driver.DriverStatus === "Outdated" ? (
+                                <ErrorIcon style={{ fontSize: "small" }} />
+                              ) : (
+                                <CheckIcon style={{ fontSize: "small" }} />
+                              )}
                               {/* {driver.StatusIcon} */}
                             </span>
                             <br />
@@ -368,7 +383,8 @@ export default function ScanRegistry() {
                                 onClick={() =>
                                   handleupdateofdriver(
                                     driver._id,
-                                    driver.DeviceName
+                                    driver.DeviceName,
+                                    driver.DriverVersion
                                   )
                                 }
                               >
@@ -381,15 +397,12 @@ export default function ScanRegistry() {
                         </tr>
                       );
                     })}
-                    
                 </tbody>
-                
               </table>
             </div>
           </div>
         </div>
         <div id="pagescanbottom" className="fixed-bottom ">
-          
           <button
             className="btn btn-light designbtn1 "
             onClick={(e) => setShow(true)}
@@ -430,13 +443,13 @@ export default function ScanRegistry() {
               </div>
 
               <div className="mtgiven ">
-                C<span className="font-bold ml-2">Availble</span>
+                <span className="font-bold ml-2">Availble</span>
                 <span className="flex justify-content-between text-xs mx-2 mt-4">
-                  Version: <p>7467.54.5.5.5</p>
+                  Version: <p>{DriverVersion}</p>
                 </span>
                 <br />
                 <span className="flex justify-content-between text-xs mx-2">
-                  Date: <p>26-02-2-24</p>
+                  Date: <p>......</p>
                 </span>
               </div>
             </div>
@@ -494,8 +507,7 @@ export default function ScanRegistry() {
                 <img src={Danger} alt="File Explorer" className="boxicons" />
                 <div className="popdata">
                   <h4 className="font-extrabold">
-                   
-                   {count}  Outdated Drivers Found !
+                    {count} Outdated Drivers Found !
                   </h4>
                   <p className="font-medium text-xs mt-1">
                     To update outdated drivers clickon Purchase Now button.
@@ -710,7 +722,9 @@ export default function ScanRegistry() {
               <b className="text-white">Update drivers has been updated</b>
             </h1>
           </div>
-          <div className="minenewpop ml-8 mt-4">
+          <div className="minenewpop ml-2 mt-3 flex justify-content-evenly">
+            <img src={check} alt="" className="mt-2 checksize" />
+
             <div className=" place-content-evenly mt-2 text-xs pt-2">
               <h1 className="font-bold text-black text-xs">SUCCESSFULL!!!</h1>
               <br />

@@ -14,12 +14,20 @@ import Setting4 from "../Image/Setting4.png"
 import keys from "../Image/keys.png"
 import Buy from "./Buy";
 import backk from "../Image/backk.png"
+// import { invoke } from '@tauri-apps/api/tauri'
+
 
 
 function Header() {
   const [cleanerStatus, setCleanerStatus] = useState("status");
   const [isRegisterPopupOpen, setRegisterPopupOpen] = useState(false);
 
+
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   setTimeout(()=>{
+  //     invoke('close_splashscreen')
+  //   } , 6_000)
+  // })
 
   const handleRegisterNowClick = () => {
     setCleanerStatus("");

@@ -576,8 +576,6 @@ th{
   width: 63vw;
   background-color: rgb(233, 236, 239);
   border: 1px solid #c4c4c4;
-
-  /* background-color: var(--bs-link-color); */
 }
 
 
@@ -2144,7 +2142,21 @@ td, th {
   font-family: sans-serif;
   border: black  solid 1px;
 }
-
+.exclusion-maintesting222 {
+  position: absolute;
+  z-index: 9999;
+  background: white;
+  left: 24%;
+  top: 49%;
+  width: 49vw;
+  height: 164px;
+  color: rgb(0, 0, 0);
+  font-family: sans-serif;
+  border: black solid 1px;
+}
+.checksize{
+  height: 40px;
+}
 
 .exclusion-maintesting22 {
   position: absolute;
