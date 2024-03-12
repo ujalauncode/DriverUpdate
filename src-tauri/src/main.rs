@@ -172,7 +172,7 @@ fn main() {
             let main_window = app.get_window("main").unwrap();
             tauri::async_runtime::spawn(async move {
               println!("Initializing...");
-              std::thread::sleep(std::time::Duration::from_secs(2));
+              std::thread::sleep(std::time::Duration::from_secs(1));
               println!("Done initializing.");
               splashscreen_window.close().unwrap();
               main_window.show().unwrap();

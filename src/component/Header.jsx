@@ -20,13 +20,14 @@ import backk from "../Image/backk.png"
 function Header() {
   const [cleanerStatus, setCleanerStatus] = useState("status");
   const [isRegisterPopupOpen, setRegisterPopupOpen] = useState(false);
+  
 
 
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(()=>{
-      invoke('close_splashscreen')
-    } , 6_000)
-  })
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   setTimeout(()=>{
+  //     invoke('close_splashscreen')
+  //   } , 6_000)
+  // })
 
   const handleRegisterNowClick = () => {
     setCleanerStatus("");
@@ -49,6 +50,15 @@ function Header() {
       setCleanerStatus(status);
       setRegisterPopupOpen(false);
     }
+ 
+  };
+  
+
+  const buttonStyle = (status) => {
+    return {
+      backgroundColor: cleanerStatus === status ? '#ffffff' : '', // Set white background if active, otherwise default
+      color: cleanerStatus === status ? '#000000' : '', // Set black text color if active, otherwise default
+    };
   };
 
   return (
@@ -61,6 +71,7 @@ function Header() {
         <div className="col-12 col-lg-12 col-sm-12 col-md-12 mx-2 box-containers ">
           <button
             className="box col-1 col-lg-2 col-sm-1 col-md-2 "
+            style={buttonStyle("status")}
             onClick={(e) => {
               handleButtonClick("status");
             }}
@@ -73,6 +84,7 @@ function Header() {
 
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
+            style={buttonStyle("scan-registry")}
             onClick={(e) => {
               handleButtonClick("scan-registry");
             }}
@@ -85,6 +97,7 @@ function Header() {
 
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
+            style={buttonStyle("defrag")}
             onClick={(e) => {
               setCleanerStatus("defrag");
             }}
@@ -99,6 +112,7 @@ function Header() {
 
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
+            style={buttonStyle("Backup")}
             onClick={(e) => {
               handleButtonClick("Backup");
             }}
@@ -111,6 +125,7 @@ function Header() {
 
           <div
             className="box col-1 col-lg-2 col-sm-1 col-md-2"
+            style={buttonStyle("Settings")}
             onClick={(e) => {
               handleButtonClick("Settings");
             }}
@@ -121,7 +136,7 @@ function Header() {
               <h3 className="h3-box h3font">Settings</h3>
             </div>
           </div>
-          <div className="box col-1 col-lg-2 col-sm-1 col-md-2" onClick={handleRegisterNowClick}>
+          <div className="box col-1 col-lg-2 col-sm-1 col-md-2" style={buttonStyle("")} onClick={handleRegisterNowClick}>
             <div className="box-items">
             <img src={keys} alt=""  className="box-icon ml-9"/>
 
