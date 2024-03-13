@@ -8,6 +8,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import graph from "../Image/graph.png"
 
 
+
 function Status() {
   const [cleanerStart, setCleanerStart] = useState("status");
   const [systemInfo, setSystemInfo] = useState();
@@ -45,7 +46,6 @@ function Status() {
         };
         setSystemInfo(a);
 
-        localStorage.setItem('systemInfo', JSON.stringify(a));
 
       } catch (error) {
         setError(error.message);
@@ -53,6 +53,13 @@ function Status() {
     };
     fetchSystemInfo();
   }, []);
+  useEffect(() => {
+    const storedSystemInfo = localStorage.getItem('systemInfo');
+    if (storedSystemInfo) {
+      setSystemInfo(JSON.parse(storedSystemInfo));
+    }
+  }, []);
+
 
   useEffect((productID) => {
     const getd =async()=>{

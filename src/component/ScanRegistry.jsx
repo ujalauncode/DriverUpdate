@@ -1,5 +1,5 @@
 import Setting from "./Setting";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import Danger from "../Image/png-transparent-danger-sign-danger-mark-yellow-removebg-preview.png";
 import Clock from "../Image/icons8-clock-50.png";
@@ -15,8 +15,10 @@ import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import check from "../Image/check.png";
 import '../component/StartScan.css'
+import { StatusContext } from "../context/StatusState";
 
 export default function ScanRegistry() {
+  let ContextValue = useContext(StatusContext);
   const [cleanerStart, setCleanerStart] = useState("status");
   const [exclusionStatus, setExclusionStatus] = useState(false);
   const [hide, setHide] = useState(false);
@@ -42,7 +44,8 @@ export default function ScanRegistry() {
   const [error, setError] = useState();
   const [DriverVersion, setDriverVersion] = useState();
   const [updateId, setUpdateId] = useState();
- 
+  const [loading, setLoading] = useState(true);
+
 
   const handleupdateofdriver = (_id, DeviceName, DriverVersion) => {
     if (!hide) {
@@ -110,10 +113,13 @@ export default function ScanRegistry() {
   });
   const postOutdatedDrivers = async (outdatedDrivers, productID) => {
     try {
+      
+      
       const res = await axios.post(
         "https://server-3-y44z.onrender.com/api/outdatedDrivers",
         { outdatedDrivers, productID }
       );
+      ContextValue.updateDriverStatus(true)
       alert("outdated drivers stored");
       console.log("Outdated drivers stored in MongoDB:", res.data);
     } catch (error) {
@@ -124,6 +130,8 @@ export default function ScanRegistry() {
 
   useEffect(() => {
     const fetchDataAndStoreOutdatedDrivers = async () => {
+
+      ContextValue.updateDriverStatus(false)
       try {
         // Fetch product ID and driver information
         const responseProductID = await invoke("__cmd__testing");
@@ -164,65 +172,65 @@ export default function ScanRegistry() {
     };
 
 
-    // const fetchAndMergeDrivers = async () => {
-    //   try {
-    //     const { outdatedDrivers, updatedDrivers, productID } =
-    //       await fetchDataAndStoreOutdatedDrivers();
-    
-    //     // Merge drivers
-    //     const res = await axios.get(
-    //       `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
-    //     );
-        
-    //     const driversData = res.data;
-    //     console.log("Outdated Drivers Response:", driversData);
-    
-    //     const mergedDrivers = [...updatedDrivers, ...driversData];
-    //     mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-    
-    //     setSystemInformation(mergedDrivers);
-    //     setLoading(false);
-    //   } catch (error) {
-    //     console.error("Error fetching and merging drivers:", error);
-    //     // Handle errors (e.g., show error message to the user)
-    //   } finally {
-    //     // Hide loading indicator here (e.g., setLoading(false))
-    //   }
-    // };
-    
-
     const fetchAndMergeDrivers = async () => {
       try {
-        let mergedDrivers = [];
-        const mergedDriversString = localStorage.getItem('mergedDrivers');
+        const { outdatedDrivers, updatedDrivers, productID } =
+          await fetchDataAndStoreOutdatedDrivers();
     
-        if (mergedDriversString) {
-          mergedDrivers = JSON.parse(mergedDriversString);
-        } else {
-          const { outdatedDrivers, updatedDrivers, productID } =
-            await fetchDataAndStoreOutdatedDrivers();
+        // Merge drivers
+        const res = await axios.get(
+          `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
+        );
+        
+        const driversData = res.data;
+        console.log("Outdated Drivers Response:", driversData);
     
-          // Merge drivers
-          const res = await axios.get(
-            `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
-          );
-          
-          const driversData = res.data;
-          console.log("Outdated Drivers Response:", driversData);
-    
-          mergedDrivers = [...updatedDrivers, ...driversData];
-          mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-    
-          // Store merged drivers data in local storage
-          localStorage.setItem('mergedDrivers', JSON.stringify(mergedDrivers));
-        }
+        const mergedDrivers = [...updatedDrivers, ...driversData];
+        mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
     
         setSystemInformation(mergedDrivers);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching and merging drivers:", error);
         // Handle errors (e.g., show error message to the user)
+      } finally {
+        // Hide loading indicator here (e.g., setLoading(false))
       }
     };
+    
+
+    // const fetchAndMergeDrivers = async () => {
+    //   try {
+    //     let mergedDrivers = [];
+    //     const mergedDriversString = localStorage.getItem('mergedDrivers');
+    
+    //     if (mergedDriversString) {
+    //       mergedDrivers = JSON.parse(mergedDriversString);
+    //     } else {
+    //       const { outdatedDrivers, updatedDrivers, productID } =
+    //         await fetchDataAndStoreOutdatedDrivers();
+    
+    //       // Merge drivers
+    //       const res = await axios.get(
+    //         `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
+    //       );
+          
+    //       const driversData = res.data;
+    //       console.log("Outdated Drivers Response:", driversData);
+    
+    //       mergedDrivers = [...updatedDrivers, ...driversData];
+    //       mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+    
+    //       // Store merged drivers data in local storage
+    //       localStorage.setItem('mergedDrivers', JSON.stringify(mergedDrivers));
+    //     }
+    
+    //     setSystemInformation(mergedDrivers);
+    //   } catch (error) {
+    //     console.error("Error fetching and merging drivers:", error);
+    //     // Handle errors (e.g., show error message to the user)
+    //   }
+    // };
 
 
     fetchAndMergeDrivers();
@@ -254,20 +262,20 @@ export default function ScanRegistry() {
   };
 
   const updatedrive = () => {
-    console.log("updateId =", updateId);
-    if (!showdriver) {
-      handleUpdateDriverStatus(updateId);
-      setShowdriver(true);
-      setIsScanning(true);
+  console.log("updateId =", updateId);
+  if (!showdriver) {
+    handleUpdateDriverStatus(updateId);
+    setShowdriver(true);
+    setIsScanning(true);
+    setTimeout(() => {
+      setShowdriver(false);
       setTimeout(() => {
-        setShowdriver(false);
-        setTimeout(() => {
-          setupdatesuccessful(true);
-        }, 100);
-      }, 10000);
-      setHide(false);
-    }
-  };
+        setupdatesuccessful(true);
+      }, 100);
+    }, 10000);
+    setHide(false);
+  }
+};
 
   const handleUpdateDriverStatus = async (_id) => {
     try {
@@ -276,7 +284,7 @@ export default function ScanRegistry() {
       );
       if (response.status === 200) {
         console.log("Driver status updated successfully");
-        removeUpdatedDriverFromLocalStorage(_id); // Remove updated driver from local storage
+        // removeUpdatedDriverFromLocalStorage(_id); 
       } else {
         console.error("Failed to update driver status");
       }
@@ -805,7 +813,20 @@ export default function ScanRegistry() {
           </div>
         </div>
       )}
-    
+    {loading && (
+      <div className="exclusion-maintesting22222">
+      <div className="minenewpop ml-2 mt-4">
+        <div className="">
+          <div className="spinner-border ml-8" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          
+         
+          </div>
+        </div>
+      </div>
+   
+    )}
 
     </>
   ) : (

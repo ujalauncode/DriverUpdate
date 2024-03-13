@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Header from "./Header";
 import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 import SearchIcon from "@mui/icons-material/Search";
 import giphy from "../Image/giphy.gif";
 import axios from "axios";
-import { invoke } from '@tauri-apps/api/tauri';
-
+import { invoke } from "@tauri-apps/api/tauri";
+import face from "../Image/face.gif";
+import { StatusContext } from "../context/StatusState";
 
 function Dafrag({ currentDate, setCurrentDate }) {
+  let ContextValue = useContext(StatusContext);
   const [show, setshow] = useState(false);
   const [driverData, setDriverData] = useState([]);
   const [currentIndexs, setCurrentIndexs] = useState(0);
   const [percentage, setPercentage] = useState(0);
-  const [cleanerStatus, setCleanerStatus] = useState("status");
   const [isScanning, setIsScanning] = useState(true);
   const [scanInterval, setScanInterval] = useState(null);
-  const [initialInterval, setInitialScanInterval] = useState(null);
   const [redirectPath, setRedirectPath] = useState(null);
   const [showBackupMessage, setShowBackupMessage] = useState(false);
   const [driversCount, setDriversCount] = useState(null);
-  const[isBackupComplete,setIsBackupComplete]=useState()
-  const [totalCount, setTotalCount] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const Tauri = window.__TAURI__;
 
@@ -42,12 +41,14 @@ function Dafrag({ currentDate, setCurrentDate }) {
 
       const interval = setInterval(() => {
         setPercentage((prevPercentage) => Math.min(prevPercentage + 0.5, 100));
-        setCurrentIndexs((prevIndex) => Math.min(prevIndex + 1, driverData.length));
+        setCurrentIndexs((prevIndex) =>
+          Math.min(prevIndex + 1, driverData.length)
+        );
 
         if (currentIndexs === driverData.length) {
           clearInterval(interval);
           setPercentage(100);
-          setCleanerStatus(status);
+          ContextValue.updateCleanerStatus(status);
           setRedirectPath("/scan-registry");
         }
       }, 10);
@@ -55,25 +56,24 @@ function Dafrag({ currentDate, setCurrentDate }) {
       setScanInterval(interval); // Store the interval ID for later clearing
     }
   };
-  
+
   let initialScanInterval;
 
   const backupdata = async () => {
     console.log("fetch data running");
     try {
-      const response = await invoke('mine_driver');
+      const response = await invoke("mine_driver");
       const newDriverData = JSON.parse(response);
       const responseProductID = await invoke("__cmd__testing");
       const productID = responseProductID.product_id;
-  
+
       setDriverData(newDriverData);
       setDriversCount(newDriverData.length);
       console.log(newDriverData);
       setCurrentIndexs(0);
       console.log("get driver route");
-  
+
       const intervalId = setInterval(() => {
-        console.log("setInterval");
         if (isScanning) {
           setPercentage((prevPercentage) =>
             Math.min(prevPercentage + 100 / newDriverData.length, 100)
@@ -86,36 +86,36 @@ function Dafrag({ currentDate, setCurrentDate }) {
           }
         }
       }, 100);
-  
+
       const currentDate = new Date();
-      const day = String(currentDate.getDate()).padStart(2, '0');
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // January is 0!
+      const day = String(currentDate.getDate()).padStart(2, "0");
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // January is 0!
       const year = currentDate.getFullYear();
       const formattedDate = `${day}/${month}/${year}`;
       console.log("date is ==", formattedDate);
-  
-      await axios.post('https://server-3-y44z.onrender.com/backupalldata', {
+
+      await axios.post("https://server-3-y44z.onrender.com/backupalldata", {
         driversCount: newDriverData.length,
         driverData: newDriverData,
         backupDate: formattedDate,
-        productID: productID // Include productID in the POST request
+        productID: productID, // Include productID in the POST request
       });
-  
+
       setScanInterval(intervalId);
-      console.log("first interval id =", intervalId);
-  
+      // console.log("first interval id =", intervalId);
+
       // Clear interval when component unmounts
       return () => clearInterval(intervalId);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
 
   useEffect(() => {
     if (percentage === 100) {
       const timeoutId = setTimeout(() => {
         setShowBackupMessage(true);
+        setLoading(false);
       }, 1000); // 10 seconds delay
       return () => {
         clearTimeout(timeoutId);
@@ -124,17 +124,19 @@ function Dafrag({ currentDate, setCurrentDate }) {
   }, [percentage]);
 
   const handlenext = async () => {
-   if(!show){
-    backupdata()
-    setshow(true)
-   }
+    if (!show) {
+      backupdata();
+      setshow(true);
+    }
   };
 
   return (
     <>
       <div className="container-darfrag testing-class">
         <div className="lastScreenResult">
-          <div className="lastScreenResultSecond text-xs ">Last Scan Result :</div>
+          <div className="lastScreenResultSecond text-xs ">
+            Last Scan Result :
+          </div>
         </div>
         <h4 className="dafrag-hh">
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Explicabo
@@ -149,29 +151,38 @@ function Dafrag({ currentDate, setCurrentDate }) {
             Select the Backup Job :
           </p>
           <div class="form-check ml-16 fontofoption1">
-          <input
-  class="form-check-input"
-  type="radio"
-  name="flexRadioDefault"
-  id="flexRadioDefault1"
-  checked
-/>
-<label class="form-check" for="flexRadioDefault1">
-  Create complete backup of all system drivers
-  <br />
-  Select this option to create a complete backup of all the system drivers
-</label>
+            <input
+              class="form-check-input"
+              type="radio"
+              name="flexRadioDefault"
+              id="flexRadioDefault1"
+              checked
+            />
+            <label class="form-check" for="flexRadioDefault1">
+              Create complete backup of all system drivers
+              <br />
+              Select this option to create a complete backup of all the system
+              drivers
+            </label>
           </div>
         </div>
         <div id="pagescanbottom" className="fixed-bottom  ">
-          <button className="btn btn-dark designbtnbackup1 px-5" onClick={handlenext}> Next </button>
+          <button
+            className="btn btn-dark designbtnbackup1 px-5"
+            onClick={handlenext}
+          >
+            {" "}
+            Next{" "}
+          </button>
         </div>
       </div>
       {show && (
         <div className="exclusion-main1">
           <div className="container-darfrag testing-class">
             <div className="lastScreenResult">
-              <div className="lastScreenResultSecond text-sm">Creating Backup of All Drivers</div>
+              <div className="lastScreenResultSecond text-sm">
+                Creating Backup of All Drivers
+              </div>
             </div>
             <div className="StartScan flex justify-content-between">
               <div>
@@ -191,51 +202,62 @@ function Dafrag({ currentDate, setCurrentDate }) {
                   </div>
                 </div>
                 <span className="ml-16 text-xs mt-16">
-                {currentIndexs < driverData.length && (
-              <p className="dat">{driverData[currentIndexs].DeviceName}</p>
-            )}
-                
+                  {currentIndexs < driverData.length && (
+                    <p className="dat">
+                      {driverData[currentIndexs].DeviceName}
+                    </p>
+                  )}
                 </span>
               </div>
-             
             </div>
-     
+            {loading && <img src={face} alt="" className="fixthisone" />}
           </div>
           {showBackupMessage && (
             <div>
-        <div className="designthisone">
-          <span className="text-sm font-bold text-green-600 flex justify-content-center border-b-2 my-2	">Backup Completed Successfully</span>
-          <div className="flex justify-content-between mt-1 mx-10 a">
-          <p>Total Drivers: </p>
-          <span>{driversCount} drivers</span>
-
-          </div>
-          <div className="flex justify-content-between mx-10 a">
-          <p> Drivers Selected For Backup: </p>
-          <span>{driversCount} drivers</span>
-
-          </div>
-          <div className="flex justify-content-between mx-10 a">
-          <p>Backup Completed For Drivers: </p>
-          <span>Successful</span>
-
-          </div>
-        </div>
-        <div >
-          <p className="text-green-500 border-t-2 mb-1 mt-14 mx-4 text-xs font-bold 	">Recommended Action:</p>
-        <p className="text-xs  mt-1 mx-4 leading-4">System with outdated drivers may not work with full efficiency.It is recommended to resister Advance Driver Update to update system specific drivers</p>
-        </div>
-</div>
-      )}
+              <div className="designthisone">
+                <span className="text-sm font-bold text-green-600 flex justify-content-center border-b-2 my-2	">
+                  Backup Completed Successfully
+                </span>
+                <div className="flex justify-content-between mt-1 mx-10 a">
+                  <p>Total Drivers: </p>
+                  <span>{driversCount} drivers</span>
+                </div>
+                <div className="flex justify-content-between mx-10 a">
+                  <p> Drivers Selected For Backup: </p>
+                  <span>{driversCount} drivers</span>
+                </div>
+                <div className="flex justify-content-between mx-10 a">
+                  <p>Backup Completed For Drivers: </p>
+                  <span>Successful</span>
+                </div>
+              </div>
+              <div>
+                <p className="text-green-500 border-t-2 mb-1 mt-14 mx-4 text-xs font-bold 	">
+                  Recommended Action:
+                </p>
+                <p className="text-xs  mt-1 mx-4 leading-4">
+                  System with outdated drivers may not work with full
+                  efficiency.It is recommended to resister Advance Driver Update
+                  to update system specific drivers
+                </p>
+              </div>
+            </div>
+          )}
           <div
             id="pagescanbottom21"
             className="fixed-bottom  mb-3 flex justify-content-end bg-gray-100"
           >
-            <button className="btn btn-light designbtn1 checkkk	text-black " onClick={(e) => setshow(false)}>
+            <button
+              className="btn btn-light designbtn1 checkkk	text-black "
+              onClick={(e) => setshow(false)}
+            >
               Finish
             </button>
-            <button className="btn btn-light designbtn1 mr-2	checkkk text-black "  onClick={handleScanToggle}>
-            {isScanning ? "Stop Backup" : "Start Backup"}
+            <button
+              className="btn btn-light designbtn1 mr-2	checkkk text-black "
+              onClick={handleScanToggle}
+            >
+              {isScanning ? "Stop Backup" : "Start Backup"}
             </button>
           </div>
         </div>
@@ -245,6 +267,3 @@ function Dafrag({ currentDate, setCurrentDate }) {
 }
 
 export default Dafrag;
-
-
-

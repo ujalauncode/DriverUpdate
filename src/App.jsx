@@ -1,22 +1,25 @@
 import React from "react";
 import "./App.css";
 import Header from "./component/Header";
-// import { invoke } from '@tauri-apps/api/tauri'
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import StartScan from "./component/StartScan";
+import StudentState from "./context/StatusState";
 
 
 function App() {
-  // document.addEventListener('DOMContentLoaded', () => {
-  //   setTimeout(()=>{
-  //     invoke('close_splashscreen')
-  //   } , 6_000)
-  // })
 
   return(
-    <>
-    <Header/>
+    
+    <BrowserRouter>
+        <StudentState>
+          <Routes>
 
-    </>  
+          <Route exact path='/' element={<Header/>} />
+         
+
+    </Routes>
+        </StudentState >
+      </BrowserRouter >
   ) 
 }
 export default App;

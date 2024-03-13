@@ -964,6 +964,11 @@ body.popup-open main {
   pointer-events: none;
 }
 
+.blur-sec{
+ 
+  filter: blur(5px);
+}
+
 body.popup-open .popup-container {
   pointer-events: auto;
 }
@@ -2614,4 +2619,6 @@ footer {
 
 }
 
-
+.fixthisone{
+  margin-left: 335px;
+}
