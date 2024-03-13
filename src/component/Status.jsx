@@ -44,6 +44,9 @@ function Status() {
           product_id:response.product_id
         };
         setSystemInfo(a);
+
+        localStorage.setItem('systemInfo', JSON.stringify(a));
+
       } catch (error) {
         setError(error.message);
       }

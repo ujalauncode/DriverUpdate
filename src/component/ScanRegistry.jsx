@@ -42,7 +42,6 @@ export default function ScanRegistry() {
   const [error, setError] = useState();
   const [DriverVersion, setDriverVersion] = useState();
   const [updateId, setUpdateId] = useState();
-  const [loading, setLoading] = useState(true);
  
 
   const handleupdateofdriver = (_id, DeviceName, DriverVersion) => {
@@ -164,54 +163,66 @@ export default function ScanRegistry() {
       }
     };
 
+
     // const fetchAndMergeDrivers = async () => {
     //   try {
     //     const { outdatedDrivers, updatedDrivers, productID } =
     //       await fetchDataAndStoreOutdatedDrivers();
-
+    
     //     // Merge drivers
     //     const res = await axios.get(
     //       `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
     //     );
+        
     //     const driversData = res.data;
-    //     console.log("outdated driverssss rrrr ====", driversData);
+    //     console.log("Outdated Drivers Response:", driversData);
+    
     //     const mergedDrivers = [...updatedDrivers, ...driversData];
-    //     mergedDrivers.sort((a, b) =>
-    //       a.DriverStatus.localeCompare(b.DriverStatus)
-    //     );
-
+    //     mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+    
     //     setSystemInformation(mergedDrivers);
+    //     setLoading(false);
     //   } catch (error) {
-    //     console.error("Error:", error);
+    //     console.error("Error fetching and merging drivers:", error);
+    //     // Handle errors (e.g., show error message to the user)
+    //   } finally {
+    //     // Hide loading indicator here (e.g., setLoading(false))
     //   }
     // };
+    
+
     const fetchAndMergeDrivers = async () => {
       try {
-        const { outdatedDrivers, updatedDrivers, productID } =
-          await fetchDataAndStoreOutdatedDrivers();
+        let mergedDrivers = [];
+        const mergedDriversString = localStorage.getItem('mergedDrivers');
     
-        // Merge drivers
-        const res = await axios.get(
-          `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
-        );
-        
-        const driversData = res.data;
-        console.log("Outdated Drivers Response:", driversData);
+        if (mergedDriversString) {
+          mergedDrivers = JSON.parse(mergedDriversString);
+        } else {
+          const { outdatedDrivers, updatedDrivers, productID } =
+            await fetchDataAndStoreOutdatedDrivers();
     
-        const mergedDrivers = [...updatedDrivers, ...driversData];
-        mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+          // Merge drivers
+          const res = await axios.get(
+            `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
+          );
+          
+          const driversData = res.data;
+          console.log("Outdated Drivers Response:", driversData);
+    
+          mergedDrivers = [...updatedDrivers, ...driversData];
+          mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+    
+          // Store merged drivers data in local storage
+          localStorage.setItem('mergedDrivers', JSON.stringify(mergedDrivers));
+        }
     
         setSystemInformation(mergedDrivers);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching and merging drivers:", error);
         // Handle errors (e.g., show error message to the user)
-      } finally {
-        // Hide loading indicator here (e.g., setLoading(false))
       }
     };
-    
-
 
 
     fetchAndMergeDrivers();
@@ -265,12 +276,28 @@ export default function ScanRegistry() {
       );
       if (response.status === 200) {
         console.log("Driver status updated successfully");
+        removeUpdatedDriverFromLocalStorage(_id); // Remove updated driver from local storage
       } else {
         console.error("Failed to update driver status");
       }
       console.log("driverId", _id);
     } catch (error) {
       console.error("Error updating driver status:", error);
+    }
+  };
+
+  const removeUpdatedDriverFromLocalStorage = (driverId) => {
+    try {
+      const mergedDriversString = localStorage.getItem('mergedDrivers');
+      if (mergedDriversString) {
+        let mergedDrivers = JSON.parse(mergedDriversString);
+        // Filter out the updated driver
+        mergedDrivers = mergedDrivers.filter(driver => driver._id !== driverId);
+        // Update local storage with the filtered drivers
+        localStorage.setItem('mergedDrivers', JSON.stringify(mergedDrivers));
+      }
+    } catch (error) {
+      console.error("Error removing updated driver from local storage:", error);
     }
   };
 
@@ -778,21 +805,7 @@ export default function ScanRegistry() {
           </div>
         </div>
       )}
-           {loading && ( 
-<div className="exclusion-maintesting22222" >
-<div className="minenewpop ml-2 ml-4 mt-6">
-  <div className="">       
-  <div className="spinner-border ml-8" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-  <div className="  mt-2 text-xs typewriter">
-    <h1 className="font-extrabold text-black text-xs ">Loading Drivers ....</h1> 
-  </div>
-  </div>
-</div>
-</div>
-
-      )}
+    
 
     </>
   ) : (

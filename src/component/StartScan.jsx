@@ -172,11 +172,14 @@ export default function StartScan({ value = 0 }) {
       {handleRedirect("scan-registry", 18000)}
 
       {showPopover && (
-      <div className="exclusion-maintesting2222" >
+      <div className="exclusion-maintesting22222" >
       <div className="minenewpop ml-2 mt-4">
-        <div className="">       
-      <img src={face} alt="" />
-        <div className="  mt-2 text-xs ">
+        <div className="">   
+        <div className="spinner-border ml-8" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>    
+      {/* <img src={face} alt="" /> */}
+        <div className="  mt-2 text-xs typewriter">
           <h1 className="font-extrabold text-black text-xs">Scanning system drivers ............</h1>
           <br />
           {/* <h2 className=" text-black text-xs font-bold">
