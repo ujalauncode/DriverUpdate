@@ -14,6 +14,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import check from "../Image/check.png";
+import '../component/StartScan.css'
 
 export default function ScanRegistry() {
   const [cleanerStart, setCleanerStart] = useState("status");
@@ -41,6 +42,19 @@ export default function ScanRegistry() {
   const [error, setError] = useState();
   const [DriverVersion, setDriverVersion] = useState();
   const [updateId, setUpdateId] = useState();
+  const [loading, setLoading] = useState(true);
+ 
+
+  const handleupdateofdriver = (_id, DeviceName, DriverVersion) => {
+    if (!hide) {
+      setHide(true);
+      setDeviceName(DeviceName);
+      setDriverVersion(DriverVersion);
+      setDriversUpdated(true);
+      // handleUpdateDriverStatus(_id);
+      setUpdateId(_id);
+    }
+  };
 
   useEffect(() => {
     if (isScanning) {
@@ -59,18 +73,6 @@ export default function ScanRegistry() {
       };
     }
   }, [isScanning]);
-
-  const handleupdateofdriver = (_id, DeviceName, DriverVersion) => {
-    if (!hide) {
-      setHide(true);
-      setDeviceName(DeviceName);
-      setDriverVersion(DriverVersion);
-      setDriversUpdated(true);
-      // handleUpdateDriverStatus(_id);
-      setUpdateId(_id);
-    }
-  };
-
   useEffect(() => {
     const fetchSystemInfo = async () => {
       try {
@@ -162,27 +164,55 @@ export default function ScanRegistry() {
       }
     };
 
+    // const fetchAndMergeDrivers = async () => {
+    //   try {
+    //     const { outdatedDrivers, updatedDrivers, productID } =
+    //       await fetchDataAndStoreOutdatedDrivers();
+
+    //     // Merge drivers
+    //     const res = await axios.get(
+    //       `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
+    //     );
+    //     const driversData = res.data;
+    //     console.log("outdated driverssss rrrr ====", driversData);
+    //     const mergedDrivers = [...updatedDrivers, ...driversData];
+    //     mergedDrivers.sort((a, b) =>
+    //       a.DriverStatus.localeCompare(b.DriverStatus)
+    //     );
+
+    //     setSystemInformation(mergedDrivers);
+    //   } catch (error) {
+    //     console.error("Error:", error);
+    //   }
+    // };
     const fetchAndMergeDrivers = async () => {
       try {
         const { outdatedDrivers, updatedDrivers, productID } =
           await fetchDataAndStoreOutdatedDrivers();
-
+    
         // Merge drivers
         const res = await axios.get(
           `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
         );
+        
         const driversData = res.data;
-        console.log("outdated driverssss rrrr ====", driversData);
+        console.log("Outdated Drivers Response:", driversData);
+    
         const mergedDrivers = [...updatedDrivers, ...driversData];
-        mergedDrivers.sort((a, b) =>
-          a.DriverStatus.localeCompare(b.DriverStatus)
-        );
-
+        mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+    
         setSystemInformation(mergedDrivers);
+        setLoading(false);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching and merging drivers:", error);
+        // Handle errors (e.g., show error message to the user)
+      } finally {
+        // Hide loading indicator here (e.g., setLoading(false))
       }
     };
+    
+
+
 
     fetchAndMergeDrivers();
   }, [selectedNumber]);
@@ -324,6 +354,7 @@ export default function ScanRegistry() {
                   </tr>
                 </thead>
                 <tbody>
+     
                   {systemInformation &&
                     systemInformation.map((driver, i) => {
                       return (
@@ -747,6 +778,22 @@ export default function ScanRegistry() {
           </div>
         </div>
       )}
+           {loading && ( 
+<div className="exclusion-maintesting22222" >
+<div className="minenewpop ml-2 ml-4 mt-6">
+  <div className="">       
+  <div className="spinner-border ml-8" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+  <div className="  mt-2 text-xs typewriter">
+    <h1 className="font-extrabold text-black text-xs ">Loading Drivers ....</h1> 
+  </div>
+  </div>
+</div>
+</div>
+
+      )}
+
     </>
   ) : (
     <Setting value="Scan" />

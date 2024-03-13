@@ -2167,6 +2167,16 @@ height: 164px;
 color: rgb(0, 0, 0);
 font-family: sans-serif;
 }
+.exclusion-maintesting22222{
+  position: absolute;
+  z-index: 9999;
+  left: 39%;
+  top: 50%;
+  width: 45vw;
+  height: 164px;
+  color: rgb(0, 0, 0);
+  font-family: sans-serif;
+  }
 
 .exclusion-maintesting22 {
   position: absolute;

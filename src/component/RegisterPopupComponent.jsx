@@ -50,7 +50,7 @@ export default function RegisterPopupComponent({ onClose }) {
               <p>Thank you for Trying Advance Driver Update!</p>
             </div>
             <div className="marqueeinpopup">
-              Please Contact our Support 9898989898.
+              Please Contact our Support 8447990060.
             </div>
 
             <div className="registernowalreadyhavekey">
