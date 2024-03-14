@@ -53,8 +53,8 @@ function Header() {
 
   const buttonStyle = (status) => {
     return {
-      backgroundColor: ContextValue.cleanerStatus === status ? "#ffffff" : "", // Set white background if active, otherwise default
-      color: ContextValue.cleanerStatus === status ? "#000000" : "", // Set black text color if active, otherwise default
+      backgroundColor: ContextValue.cleanerStatus === status ? "#ffffff" : "", 
+      color: ContextValue.cleanerStatus === status ? "#000000" : "", 
     };
   };
 

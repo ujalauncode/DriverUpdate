@@ -60,11 +60,11 @@ export default function RegisterPopupComponent({ onClose }) {
                 </div>
               </div>
               <div className="registernowalreadyhavekeyparttwo">
-                <p>Already have a License Key</p>
+                <p>Want to register yourself</p>
                 <div className="registernowalreadyhavekeyparttwoin">
                   <div>
                     {" "}
-                    If you have a License key , please enter it in the form
+                    If you didn't register yet , please enter it in the form
                     below and click <span className="spanw">Register Now</span>
                   </div>
                   <div className="registernowinput">
@@ -82,7 +82,7 @@ export default function RegisterPopupComponent({ onClose }) {
                         class="form-control"
                         required
                       />
-                      <label htmlFor="">License Key :</label>
+                      {/* <label htmlFor="">License Key :</label>
                       <input
                         onChange={(e) =>
                           setuserDetail({
@@ -93,7 +93,7 @@ export default function RegisterPopupComponent({ onClose }) {
                         type="text"
                         name="licenseKey"
                         required
-                      />
+                      /> */}
                       <div className="registernowinputfirstbutton">
                         <button onClick={handlelincenskey}>Register Now</button>
                       </div>
@@ -110,7 +110,7 @@ export default function RegisterPopupComponent({ onClose }) {
                 </div>
               </div>
               <div className="registernowalreadyhavekeyparttwo">
-                <p>Need a License Key</p>
+              
                 <div className="registernowalreadyhavekeyparttwoin">
                   <div>
                     <div>
@@ -121,11 +121,11 @@ export default function RegisterPopupComponent({ onClose }) {
                           fontWeight: "600",
                         }}
                       >
-                        DevClean Pro
+                        Advance Driver Update
                       </span>{" "}
                     </div>
                     <div>
-                      to repair all registry on your PC , other benefit may
+                      to update all your drivers of your PC , other benefit may
                       include faster startup and{" "}
                     </div>
                     <div> greater stability of your system </div>

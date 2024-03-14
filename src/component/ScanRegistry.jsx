@@ -23,14 +23,9 @@ export default function ScanRegistry() {
   const [exclusionStatus, setExclusionStatus] = useState(false);
   const [hide, setHide] = useState(false);
   const [show, setShow] = useState(false);
-  const [driverData, setDriverData] = useState([]);
-  const [driverCount, setDriverCount] = useState(0);
   const [selectedCount, setSelectedCount] = useState(0);
   const currentDate = new Date().toLocaleDateString();
   const [systemInformation, setSystemInformation] = useState();
-
-  const [comparisonResult, setComparisonResult] = useState([]);
-  const [updateStatus, setUpdateStatus] = useState("");
   const [showdriver, setShowdriver] = useState();
   const [isScanning, setIsScanning] = useState(false);
   const [percentage, setPercentage] = useState(0);
@@ -45,9 +40,11 @@ export default function ScanRegistry() {
   const [DriverVersion, setDriverVersion] = useState();
   const [updateId, setUpdateId] = useState();
   const [loading, setLoading] = useState(true);
+  const [updateDriverStatus, setUpdateDriverStatus] = useState(false)
 
 
   const handleupdateofdriver = (_id, DeviceName, DriverVersion) => {
+    setUpdateDriverStatus(true)
     if (!hide) {
       setHide(true);
       setDeviceName(DeviceName);
@@ -112,9 +109,7 @@ export default function ScanRegistry() {
     return storedNumber ? parseInt(storedNumber, 10) : getRandomNumber();
   });
   const postOutdatedDrivers = async (outdatedDrivers, productID) => {
-    try {
-      
-      
+    try {     
       const res = await axios.post(
         "https://server-3-y44z.onrender.com/api/outdatedDrivers",
         { outdatedDrivers, productID }
@@ -133,7 +128,6 @@ export default function ScanRegistry() {
 
       ContextValue.updateDriverStatus(false)
       try {
-        // Fetch product ID and driver information
         const responseProductID = await invoke("__cmd__testing");
         const productID = responseProductID.product_id;
 
@@ -192,7 +186,6 @@ export default function ScanRegistry() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching and merging drivers:", error);
-        // Handle errors (e.g., show error message to the user)
       } finally {
         // Hide loading indicator here (e.g., setLoading(false))
       }
@@ -299,9 +292,7 @@ export default function ScanRegistry() {
       const mergedDriversString = localStorage.getItem('mergedDrivers');
       if (mergedDriversString) {
         let mergedDrivers = JSON.parse(mergedDriversString);
-        // Filter out the updated driver
         mergedDrivers = mergedDrivers.filter(driver => driver._id !== driverId);
-        // Update local storage with the filtered drivers
         localStorage.setItem('mergedDrivers', JSON.stringify(mergedDrivers));
       }
     } catch (error) {
@@ -321,7 +312,7 @@ export default function ScanRegistry() {
             `https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`
           )
           .then((response) => {
-            setCount(response.data.count || 0);
+            setCount(response.data.count );
           })
           .catch((error) => {
             console.error("Error fetching outdated drivers count:", error);
@@ -337,7 +328,7 @@ export default function ScanRegistry() {
 
   return cleanerStart === "status" ? (
     <>
-      <div className="container-fluid">
+      <div className={`${updateDriverStatus===false?"":"blur-sec-driver"} container-fluid`}>
         <div className="row flex justify-content-center">
           <div className="col-12 col-lg-12 col-md-12 col-sm-12">
             <div className=" scantopoftable ">
@@ -495,7 +486,7 @@ export default function ScanRegistry() {
             <b>{deviceName} </b>
           </h1>
           <div onClick={(e) => setHide(false)}>
-            <span className="close"></span>
+            <span className="close" onClick={e=>setUpdateDriverStatus(false)}></span>
           </div>
           <div className="flex justify-content-evenly">
             <div className="designupdate">
@@ -742,9 +733,9 @@ export default function ScanRegistry() {
             <h1 style={{ marginLeft: "10px" }} className="font-extrabold pt-2">
               <b className="text-white">Update all your drivers in minutes</b>
             </h1>
-            <div onClick={(e) => setShowdriver(false)}>
+            {/* <div onClick={(e) => setShowdriver(false)}>
               <span className="closeagain "></span>
-            </div>
+            </div> */}
           </div>
           <div className="minenewpop">
             <div className="flex place-content-evenly mt-2 text-xs pt-2">
@@ -806,7 +797,7 @@ export default function ScanRegistry() {
             <a
               className="btn btn-light designbtn100 mr-2 border-black bg-green-700 text-white px-3"
               href=""
-              onClick={(e) => setupdatesuccessful(false)}
+              onClick={(e) => {setupdatesuccessful(false);setUpdateDriverStatus(false)}}
             >
               Ok{" "}
             </a>

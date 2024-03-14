@@ -969,6 +969,11 @@ body.popup-open main {
   filter: blur(5px);
 }
 
+.blur-sec-driver{
+  filter: blur(5px);
+  height: 450px;
+}
+
 body.popup-open .popup-container {
   pointer-events: auto;
 }
@@ -1048,27 +1053,27 @@ body.popup-open .popup-container {
   background: rgb(34, 193, 195);
   background: linear-gradient(
     0deg,
-    rgba(34, 193, 195, 1) 15%,
-    rgba(45, 76, 253, 1) 82%
+    rgb(11, 11, 11) 15%,
+    rgb(15, 15, 17) 82%
   );
   padding: 5px;
   width: 20vw;
   margin: 10px 0px 5px 0px;
-  border: 2px solid blue;
+  border: 2px solid gold;
   color: #fff;
 }
 
 .registernowinputfirstbuttona {
   width: 20vw !important;
   font-weight: 600;
-  background: rgb(34, 193, 195);
+  background: rgb(0, 0, 0);
   background: linear-gradient(
     0deg,
-    rgba(34, 193, 195, 1) 15%,
-    rgba(45, 76, 253, 1) 82%
+    rgb(0, 0, 0) 15%,
+    rgb(0, 0, 0) 82%
   );
   padding: 5px;
-  border: 2px solid blue;
+  border: 2px solid gold;
   margin: 10px 0px;
   cursor: pointer;
 }
