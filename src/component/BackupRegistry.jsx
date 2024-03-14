@@ -95,7 +95,7 @@ export default function BackupRegistry() {
         </div>
         <ul className="grid">
           <div className="">
-            {latestBackupDates.map((i, index) => {
+            {latestBackupDates && latestBackupDates.map((i, index) => {
               console.log("i =", i);
               const uniqueId = `option${index + 1}`;
               return (
