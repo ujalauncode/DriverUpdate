@@ -29,7 +29,7 @@ export default function Navbar() {
 
     <div className='flex'>
     <img src={settinglogo1} alt="" className='logodesign' />
-    <a className="navbar-brand navdesign" href="#">   Advance Driver Update</a>
+    <a className="navbar-brand navdesign" href="#">   Advanced Driver Update</a>
 
     </div>
     <div className='mr-5'>
