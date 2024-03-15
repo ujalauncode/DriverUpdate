@@ -1,4 +1,5 @@
 import Setting from "./Setting";
+import React from 'react';
 import { useEffect, useState, useContext } from "react";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import Danger from "../Image/png-transparent-danger-sign-danger-mark-yellow-removebg-preview.png";
@@ -9,8 +10,6 @@ import Logo from "../Image/money-back-in-60-days-guarantee-badge-golden-medal-ve
 import axios from "axios";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { invoke } from "@tauri-apps/api/tauri";
-import giphy from "../Image/giphy.gif";
-import { NavLink, useNavigate } from "react-router-dom";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import check from "../Image/check.png";
@@ -163,156 +162,84 @@ export default function ScanRegistry() {
       }
     };
 
+
+
     const fetchAndMergeDrivers = async () => {
       try {
-        const { outdatedDrivers, updatedDrivers, productID } = await fetchDataAndStoreOutdatedDrivers();
-    
-        const countRes = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`);
-        const count = countRes.data.count;
-    
-        const res = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
+        const { outdatedDrivers, updatedDrivers, productID } =
+          await fetchDataAndStoreOutdatedDrivers();
+        let mergedDrivers;
+
+        // Merge drivers
+        const res = await axios.get(
+          `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
+        );
+
         const driversData = res.data;
+        if(driversData.length>0){
+          console.log("if driver response")
+          mergedDrivers = [...driversData, ...updatedDrivers];
+          setCount(driversData.length)
+          mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
     
-        const mergedDrivers = [...updatedDrivers, ...driversData];
-        console.log("merge driver =", mergedDrivers);
-        mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+          setSystemInformation(mergedDrivers);
+          setLoading(false);
+        }
+        
+        else if(outdatedDrivers.length>0){
+          mergedDrivers = [...outdatedDrivers, ...updatedDrivers];
+          setCount(outdatedDrivers.length)
+
+          mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
     
-        setCount(count);
-        setSystemInformation(mergedDrivers);
-        setLoading(false);
+          setSystemInformation(mergedDrivers);
+          setLoading(false);
+        }
+        console.log("Outdated Drivers Response:", driversData, outdatedDrivers);
+       
+
       } catch (error) {
         console.error("Error fetching and merging drivers:", error);
-        setError(true);
       } finally {
         // Hide loading indicator here (e.g., setLoading(false))
       }
     };
-    
-   
-      // const fetchAndMergeDrivers = async () => {
-      //   try {
-      //     const { outdatedDrivers, updatedDrivers, productID } = await fetchDataAndStoreOutdatedDrivers();
 
-      //     const countRes = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`);
-      //     const count = countRes.data.count;
-    
-      //     const res = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
-      //     const driversData = res.data;
-      //     console.log("this is only outdated drivers"  , driversData)
-      //     const mergedDrivers = [...updatedDrivers, ...driversData];
-      //     console.log("merge driver =", mergedDrivers);
-      //     mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-          
-      //     setCount(count);
-      //     setSystemInformation(mergedDrivers);
-      //     setLoading(false);
-      //   } catch (error) {
-      //     console.error("Error fetching and merging drivers:", error);
-      //     setError(true);
-      //   } finally {
-      //     // Hide loading indicator here (e.g., setLoading(false))
-      //   }
-      // };
-    
-     
-    
-    
-    
 
-    // const fetchAndMergeDrivers = async () => {
-    //   try {
-    //     const { outdatedDrivers, updatedDrivers, productID } =
-    //       await fetchDataAndStoreOutdatedDrivers();
 
-    //     // Merge drivers
-    //     const res = await axios.get(
-    //       `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
-    //     );
-
-    //     const driversData = res.data;
-    //     console.log("Outdated Drivers Response:", driversData);
-
-    //     const mergedDrivers = [...updatedDrivers, ...driversData];
-    //     console.log("merge driver =",mergedDrivers)
-    //     mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-
-    //     setSystemInformation(mergedDrivers);
-    //     setLoading(false);
-    //   } catch (error) {
-    //     console.error("Error fetching and merging drivers:", error);
-    //   } finally {
-    //     // Hide loading indicator here (e.g., setLoading(false))
-    //   }
-    // };
-
-    // const fetchAndMergeDrivers = async () => {
-    //   try {
-    //     const { outdatedDrivers, updatedDrivers, productID } =
-    //       await fetchDataAndStoreOutdatedDrivers();
-    //     let mergedDrivers;
-
-    //     // Merge drivers
-    //     const res = await axios.get(
-    //       `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
-    //     );
-
-    //     const driversData = res.data;
-    //     if (driversData <= 0) {
-    //       mergedDrivers = [...updatedDrivers, ...driversData];
-    //       setCount(driversData.length);
-    //     } else {
-    //       mergedDrivers = [...updatedDrivers, ...outdatedDrivers];
-    //       setCount(outdatedDrivers.length);
-    //     }
-    //     console.log("Outdated Drivers Response:", driversData, outdatedDrivers);
-    //     mergedDrivers.sort((a, b) =>
-    //       a.DriverStatus.localeCompare(b.DriverStatus)
-    //     );
-
-    //     setSystemInformation(mergedDrivers);
-    //     setLoading(false);
-    //   } catch (error) {
-    //     console.error("Error fetching and merging drivers:", error);
-    //   } finally {
-    //     // Hide loading indicator here (e.g., setLoading(false))
-    //   }
-    // };
-
-    // const fetchAndMergeDrivers = async () => {
-    //   try {
-    //     let mergedDrivers = [];
-    //     const mergedDriversString = localStorage.getItem('mergedDrivers');
-
-    //     if (mergedDriversString) {
-    //       mergedDrivers = JSON.parse(mergedDriversString);
-    //     } else {
-    //       const { outdatedDrivers, updatedDrivers, productID } =
-    //         await fetchDataAndStoreOutdatedDrivers();
-
-    //       // Merge drivers
-    //       const res = await axios.get(
-    //         `https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`
-    //       );
-
-    //       const driversData = res.data;
-    //       console.log("Outdated Drivers Response:", driversData);
-
-    //       mergedDrivers = [...updatedDrivers, ...driversData];
-    //       mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
-
-    //       // Store merged drivers data in local storage
-    //       localStorage.setItem('mergedDrivers', JSON.stringify(mergedDrivers));
-    //     }
-
-    //     setSystemInformation(mergedDrivers);
-    //   } catch (error) {
-    //     console.error("Error fetching and merging drivers:", error);
-    //     // Handle errors (e.g., show error message to the user)
-    //   }
-    // };
 
     fetchAndMergeDrivers();
   }, [selectedNumber]);
+
+
+
+    // const fetchAndMergeDrivers = async () => {
+    //   try {
+    //     const { outdatedDrivers, updatedDrivers, productID } = await fetchDataAndStoreOutdatedDrivers();
+    
+    //     const countRes = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/count/${productID}`);
+    //     const count = countRes.data.count;
+    
+    //     const res = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
+    //     const driversData = res.data;
+    
+    //     const mergedDrivers = [...updatedDrivers, ...driversData];
+    //     console.log("merge driver =", mergedDrivers);
+    //     mergedDrivers.sort((a, b) => a.DriverStatus.localeCompare(b.DriverStatus));
+    
+    //     setCount(count);
+    //     setSystemInformation(mergedDrivers);
+    //     setLoading(false);
+    //   } catch (error) {
+    //     console.error("Error fetching and merging drivers:", error);
+    //     setError(true);
+    //   } finally {
+    //     // Hide loading indicator here (e.g., setLoading(false))
+    //   }
+    // };
+    
+
+
 
   useEffect(() => {
     localStorage.setItem("selectedNumber", selectedNumber);
@@ -362,6 +289,7 @@ export default function ScanRegistry() {
       );
       if (response.status === 200) {
         console.log("Driver status updated successfully");
+        fetchAndMergeDrivers();
         // removeUpdatedDriverFromLocalStorage(_id);
       } else {
         console.error("Failed to update driver status");
