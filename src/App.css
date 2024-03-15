@@ -1342,6 +1342,7 @@ height: 70px;
 .nav-icon1{
   color: white !important;
   cursor: pointer;
+  padding-bottom: 6px;
   
 }
 /* .nav-icon1:hover {
@@ -2627,3 +2628,5 @@ footer {
 .fixthisone{
   margin-left: 335px;
 }
+
+

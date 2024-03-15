@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react';
+
 import GridViewIcon from '@mui/icons-material/GridView';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import settinglogo1 from "../Image/settinglogo1.png"
@@ -6,9 +7,13 @@ import MinimizeIcon from '@mui/icons-material/Minimize';
 import CloseIcon from '@mui/icons-material/Close';
 import { invoke } from '@tauri-apps/api/tauri';
 import '../component/StartScan.css'
+import { appWindow } from '@tauri-apps/api/window'
+
 
 
 export default function Navbar() {
+  const titleBarRef = useRef(null);
+
   const closeWindow = () => {
   
     window.open('', '_self', '');
@@ -17,16 +22,38 @@ export default function Navbar() {
  
 
   const minimizeApp = () => {
-    if (window.api && window.api.minimize) {
-      window.api.minimize(); // Call your Tauri API method to minimize the window
+    if (appWindow && appWindow.minimize) {
+      appWindow.minimize(); // Call your Tauri API method to minimize the window
     } else {
       console.error('Tauri API not available or minimize method not defined.');
     }
   };
+  
+
+  useEffect(() => {
+    const handleMouseDown = () => {
+      if (window.api && window.api.start_dragging) {
+        window.api.start_dragging();
+      } else {
+        console.error('start_dragging function not available in window.api');
+      }
+    };
+
+    const titleBarElement = titleBarRef.current;
+    if (titleBarElement) {
+      titleBarElement.addEventListener('mousedown', handleMouseDown);
+    }
+
+    return () => {
+      if (titleBarElement) {
+        titleBarElement.removeEventListener('mousedown', handleMouseDown);
+      }
+    };
+  }, []); 
 
   return (
     <>
- <div className="container-fluid">
+ <div className="container-fluid" id="titlebar" ref={titleBarRef}>
  <nav className="navbar navbar-expand-lg bg-body-tertiary nb">
   <div className="container-fluid d-flex justify-between">
 
@@ -40,6 +67,7 @@ export default function Navbar() {
   
       <GridViewIcon fontSize="medium" className="nav-icon" />
       <BusinessCenterIcon fontSize="medium" className="nav-icon" />
+
       <MinimizeIcon  fontSize="medium" className="nav-icon1" onClick={minimizeApp}/>
       <CloseIcon  fontSize="small" color="secondary"  className="nav-icon11" onClick = {closeWindow} />
     </div>   
