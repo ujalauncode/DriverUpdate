@@ -141,7 +141,7 @@ export default function ScanRegistry() {
               DriverStatus: "Outdated",
               StatusColor: "#2a2a2a",
               StatusIcon: <ErrorIcon style={{ fontSize: "small" }} />,
-              StatusTextWeight: "normal",
+              StatusTextWeight: "900",
             });
           } else {
             updatedDrivers.push({

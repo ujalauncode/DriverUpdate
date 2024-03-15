@@ -164,8 +164,14 @@ let rounded_memory_size_gb: u64 = memory_info_gb.ceil() as u64;
 
 
 
+
+
+
+
+
 fn main() {
     tauri::Builder::default()
+    
         .invoke_handler(tauri::generate_handler![greet, mine_driver, __cmd__testing,close_splashscreen])
         .setup(|app| {
             let splashscreen_window = app.get_window("splashscreen").unwrap();
