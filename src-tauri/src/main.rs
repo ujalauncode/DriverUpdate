@@ -161,15 +161,6 @@ let rounded_memory_size_gb: u64 = memory_info_gb.ceil() as u64;
    
 }
 
-
-// #[tauri::command]
-// fn start_dragging() {}
-
-
-
-
-
-
 fn main() {
     tauri::Builder::default()
     

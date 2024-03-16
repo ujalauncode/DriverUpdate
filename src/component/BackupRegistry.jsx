@@ -63,21 +63,38 @@ export default function BackupRegistry() {
     }
   };
 
+  // useEffect(() => {
+  //   const getdrivers = async () => {
+  //     try {
+  //       const responseProductID =  await invoke("__cmd__testing");
+  //       const productID = responseProductID.product_id;
+  //       console.log('Product ID:', productID);
+  //       const response= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
+  //       const driverinfo = await response.data;
+  //       console.log("my driver =", driverinfo);
+  //       setmydriver(driverinfo);
+  //     } catch (error) {
+  //       console.log("this is errorr", error);
+  //     }
+  //   };
+  //   getdrivers();
+  // }, []);
+
   useEffect(() => {
-    const getdrivers = async () => {
+    const getDrivers = async () => {
       try {
-        const responseProductID =  await invoke("__cmd__testing");
+        const responseProductID = await invoke("__cmd__testing");
         const productID = responseProductID.product_id;
         console.log('Product ID:', productID);
-        const response= await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
-        const driverinfo = await response.data;
-        console.log("my driver =", driverinfo);
-        setmydriver(driverinfo);
+        const response = await axios.get(`https://server-3-y44z.onrender.com/api/outdatedDrivers/${productID}`);
+        const driverInfo = await response.data;
+        console.log("my driver =", driverInfo);
+        setmydriver(driverInfo);
       } catch (error) {
-        console.log("this is errorr", error);
+        console.log("this is error", error);
       }
     };
-    getdrivers();
+    getDrivers();
   }, []);
 
   return (
@@ -214,9 +231,11 @@ export default function BackupRegistry() {
                               <span className="text-xs">{d.DriverVersion}</span>
                             </td>
                             <td className="font-bold text-xs text-blue-500 underline setdriverinfor ml-20">
-                              <span onClick={(e) => setHide(true)}>
-                                Uninstall Update
-                              </span>
+                            {d.outdated ? null : (
+            <span onClick={(e) => setHide(true)}>
+              Uninstall Update
+            </span>
+          )}
                             </td>
                           </tr>
                         );

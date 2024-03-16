@@ -20,11 +20,6 @@ function Header() {
   let ContextValue = useContext(StatusContext);
   const [isRegisterPopupOpen, setRegisterPopupOpen] = useState(false);
 
-  // document.addEventListener('DOMContentLoaded', () => {
-  //   setTimeout(()=>{
-  //     invoke('close_splashscreen')
-  //   } , 6_000)
-  // })
 
   const handleRegisterNowClick = () => {
     ContextValue.updateCleanerStatus("");
@@ -61,7 +56,6 @@ function Header() {
   return (
     <>
       <Navbar />
-
       {isRegisterPopupOpen && <div className="blur-overlay tops"></div>}
       <div
         className={`main-container ${isRegisterPopupOpen ? "header-blur" : ""}`}

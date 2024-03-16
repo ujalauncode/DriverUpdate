@@ -30,30 +30,11 @@ export default function Navbar() {
   };
   
 
-  useEffect(() => {
-    const handleMouseDown = () => {
-      if (window.api && window.api.start_dragging) {
-        window.api.start_dragging();
-      } else {
-        console.error('start_dragging function not available in window.api');
-      }
-    };
 
-    const titleBarElement = titleBarRef.current;
-    if (titleBarElement) {
-      titleBarElement.addEventListener('mousedown', handleMouseDown);
-    }
-
-    return () => {
-      if (titleBarElement) {
-        titleBarElement.removeEventListener('mousedown', handleMouseDown);
-      }
-    };
-  }, []); 
 
   return (
     <>
- <div className="container-fluid" id="titlebar" ref={titleBarRef}>
+ <div data-tauri-drag-region className="container-fluid" id="titlebar" ref={titleBarRef}>
  <nav className="navbar navbar-expand-lg bg-body-tertiary nb">
   <div className="container-fluid d-flex justify-between">
 
