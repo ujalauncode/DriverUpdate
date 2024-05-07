@@ -113,7 +113,6 @@ export default function ScanRegistry() {
         { outdatedDrivers, productID }
       );
       ContextValue.updateDriverStatus(true);
-      // alert("outdated drivers stored");
       console.log("Outdated drivers stored in MongoDB:", res.data);
     } catch (error) {
       console.error("Error posting outdated drivers:", error);

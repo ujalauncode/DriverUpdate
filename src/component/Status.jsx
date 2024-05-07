@@ -53,6 +53,7 @@ function Status() {
     };
     fetchSystemInfo();
   }, []);
+  
   useEffect(() => {
     const storedSystemInfo = localStorage.getItem('systemInfo');
     if (storedSystemInfo) {
@@ -184,13 +185,13 @@ function Status() {
                     <div className="flex justify-content-between ">
                       <h6 className="text-black  ml-4 mt-2 ">
                         <div className="text-xs">System</div>{" "}
-                        <h5 className="mr-3 text-sm font-semibold font-sans whitespace-nowrap	truncate-text">
+                        <h5 className="mr-3 text-xs font-thin font-sans whitespace-nowrap	truncate-text">
                           {systemInfo.os_info}
                         </h5>
                       </h6>
                       <h6 className="text-black  ml-9 mt-2">
                         <div className="text-xs">Memory(RAM)</div>{" "}
-                        <h5 className="ml-7 text-sm font-semibold font-sans">
+                        <h5 className="ml-7 text-sm font-thin font-sans">
    
                  {systemInfo.memory_info} GB
                         </h5>

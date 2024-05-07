@@ -31,7 +31,7 @@ fn mine_driver() -> Result<String, String> {
         .args(&["-Command", "$driverInfo = Get-WmiObject Win32_PnPSignedDriver | Select-Object DeviceName, DriverVersion, DriverStatus; ConvertTo-Json $driverInfo"])
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
-        .creation_flags(0x08000000) // CREATE_NO_WINDOW flag
+        .creation_flags(0x08000000) 
         .output()
         .map_err(|e| format!("Failed to execute command: {}", e))?;
 
@@ -61,7 +61,7 @@ struct SystemInfo {
 
 
 #[tauri::command]
-fn __cmd__testing() -> SystemInfo {
+fn __cmd_testing() -> SystemInfo {
     use std::process::{Command, Stdio};
 
     let os_info = Command::new("wmic")
@@ -161,10 +161,12 @@ let rounded_memory_size_gb: u64 = memory_info_gb.ceil() as u64;
    
 }
 
+
+
 fn main() {
     tauri::Builder::default()
     
-        .invoke_handler(tauri::generate_handler![greet, mine_driver, __cmd__testing,close_splashscreen])
+        .invoke_handler(tauri::generate_handler![greet, mine_driver, __cmd_testing,close_splashscreen])
         .setup(|app| {
             let splashscreen_window = app.get_window("splashscreen").unwrap();
             let main_window = app.get_window("main").unwrap();
